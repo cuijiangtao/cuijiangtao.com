@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title></title>
+  </head>
+  <body>
+
+  <div class="box">
+    <span>账号：<input type="text" id="user"></span><br/>
+    <span>密码：<input type="text" id="pass"></span><br />
+    <input type="checkbox" id="check" />自动登陆<br />
+    <button id="btn">注册</button>
+    <button id="login">登录</button>
+  </div>
+      <script type="text/javascript">
+      btn.onclick = function(){
+        ajax({
+            url:'http://localhost:8004/zhuche',
+            type:'post',
+            data:{
+              user:user.value,
+              pass:pass.value
+            },
+            success:function(data){
+              console.log(data)
+            }
+          })
+      
+      
+    }
+      login.onclick = function(){
+        ajax({
+          url:'http://localhost:8004/denglu',
+          type:'post',
+          data:{
+            user:user.value,
+            pass:pass.value,
+            cook:check.checked
+          },
+          success:function(data){
+            console.log(data)
+          var jie=data.split("=")[0]
+          var vision=data.split("=")[1]
+          if(jie=="ok"){
+            document.write("欢迎您"+vision)
+          }
+          }
+        })
+      }
+      ajax({
+        url:'http://localhost:8004/zdong',
+        type:'get',
+        success:function(data){
+          console.log(data)
+          var jie=data.split("=")[0]
+          var vision=data.split("=")[1]
+          if(jie=="ok"){
+            document.write("欢迎您"+vision)
+            
+          }
+        }
+      })
+
+
+
+
+
+
+  function ajax (option){
+  var xhr = new XMLHttpRequest();
+
+  var arr= []
+  for(var i in option.data){
+    arr.push(i+'='+option.data[i])
+  }
+   var str = '';
+   str=arr.join('&')
+
+  
+   if(option.type == 'get'){
+  xhr.open('get',option.url+'?'+str,true);
+  xhr.send();
+    } else 
+    if(option.type == 'post'){
+     xhr.open('post',option.url,true);
+     xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+     xhr.send(str);
+    }
+
+
+
+  xhr.onreadystatechange = function (){
+    if(xhr.readyState == 4){
+      if(xhr.status >=200 && xhr.status < 300 || xhr.status == 304){
+        option.success(xhr.responseText)
+        //console.log(xhr.responseText)
+      }else{
+        console.log('服务器错误')
+      }
+
+
+          }
+  }
+}
+
+          
+      </script>
+
+
+  </body>
+</html>
